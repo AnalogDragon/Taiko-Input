@@ -2556,7 +2556,7 @@
              </font>
             </property>
             <property name="text">
-             <string>下载大力鼓 默认配置</string>
+             <string>Force DEF</string>
             </property>
            </widget>
           </item>
@@ -2587,7 +2587,7 @@
              </font>
             </property>
             <property name="text">
-             <string>下载街机鼓 默认配置</string>
+             <string>12Aisa DEF</string>
             </property>
            </widget>
           </item>

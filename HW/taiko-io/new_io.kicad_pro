@@ -459,7 +459,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "new_io.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""

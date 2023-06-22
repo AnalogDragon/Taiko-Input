@@ -137,8 +137,9 @@ volatile UINT8  KeyCountTime_B[4] = {0};
 #define MODE_NS_GP 		0
 #define MODE_KEYBOARD 	1
 #define MODE_KB_LMT  	2
+#define MODE_STARTUP  	MODE_KEYBOARD
 
-UINT8 start_up_mode = MODE_KB_LMT;
+UINT8 start_up_mode = MODE_STARTUP;
 
 volatile UINT16 KEY_OUT = 0;
 
@@ -1424,11 +1425,13 @@ void main(void)
     CfgFsys();                                                           //CH559时钟选择配置
     mDelaymS(5);                                                          //修改主频等待内部晶振稳定,必加	
   
-	//wait 1s
-	start_up_mode = MODE_KB_LMT;
+	//start up delay1 wait 1s
+	start_up_mode = MODE_STARTUP;
     while (1){
-		if(!KEY1 || !KEY2)start_up_mode = MODE_NS_GP;
-		if(!KEY3 || !KEY4)start_up_mode = MODE_KEYBOARD;
+		if(!KEY1)start_up_mode = MODE_NS_GP;
+		if(!KEY2)start_up_mode = MODE_KEYBOARD;
+		if(!KEY3)start_up_mode = MODE_KB_LMT;
+		if(!KEY4)start_up_mode = MODE_STARTUP;
 		WDOG_COUNT = 0;
 		WAIT_COUNT++;
 		mDelaymS(10);

@@ -10,6 +10,7 @@ v1.0
 #include <stdio.h>
 #include <string.h>
 
+//#define WITHOUT_OUTPUT_ASSIGN
 
 #define VID 0xAABB
 #define PID 0xCCDD
@@ -360,8 +361,14 @@ void USBDeviceInit()
 }
 
 /*----------------------*/
+#ifdef WITHOUT_OUTPUT_ASSIGN
+#define COUNT_NUM_D 	2
+#define COUNT_NUM_K 	2
+#else
 #define COUNT_NUM_D 	4
 #define COUNT_NUM_K 	2
+#endif
+
 
 UINT8 input_count[8] = {0};
 
@@ -433,6 +440,10 @@ void Taiko_task(UINT16 DATA_){
 		exchange_count[6] = EXCHANGE_DATA;
 		if(exchange_count[5] == 0)exchange_count[5] = EXCHANGE_DATA / 2;
 	}
+	
+#ifdef WITHOUT_OUTPUT_ASSIGN
+	//
+#else
 	//咚允许交叉加入
 	if(input_count[1] && exchange_count[2] == 0){
 		input_count[1]--;
@@ -455,6 +466,7 @@ void Taiko_task(UINT16 DATA_){
 		if(exchange_count[6] == 0)exchange_count[6] = EXCHANGE_DATA / 2;
 	}
 	
+#endif
 	
 	//获取输出
 	KEY_OUT = DATA_ & 0xFF00;

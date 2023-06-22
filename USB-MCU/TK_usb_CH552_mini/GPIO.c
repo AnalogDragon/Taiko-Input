@@ -239,8 +239,7 @@ UINT8 ReadIOSlow(void){
   }
 
   IODATA_bak = IODATA;
-  
-	return KeyOut;
+  return KeyOut;
 }
 
 
