@@ -33,6 +33,8 @@ fp-info-cache
 *.prl
 *.kicad_prl
 *.zip
+*.gbrjob
+*.pos
 
 # Exported BOM files
 *.xml
