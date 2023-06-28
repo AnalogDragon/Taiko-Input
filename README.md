@@ -2,7 +2,7 @@
 
 太鼓输入硬件，usb为HID设备，可以连接2个鼓和8通道的数字量输入。
 
-[ENG](./README_EN.md)
+- [English Version](./README_EN.md)
 
 <br/>
 

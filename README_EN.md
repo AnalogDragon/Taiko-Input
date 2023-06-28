@@ -2,7 +2,7 @@
 
 This project is an Taiko input hardware which emulates USB HID input device with max 2 of drums & 8 channel digital-input.
 
-[CHN](./README.md)
+- [中文版](./README.md)
 
 <br/>
 
