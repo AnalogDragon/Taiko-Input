@@ -2,7 +2,7 @@
     Sampling Microcontroller Software
     MCU: stm32g030, IDE: KEIL 5
 
-[Chinese Version](./README.md)  
+[ä¸­æ–‡ç‰ˆ](./README.md)  
 
 [Home](../)  
 
@@ -14,16 +14,16 @@ It is important to note that the software compiled for single drum hardware cann
 
 Single Drum Version:
 ```
-¡­
+...
 #define IS_4CH_MODE 
-¡­
+...
 ```
 
 Dual Drum Version (comment out this line of code):
 ```
-¡­
+...
 //#define IS_4CH_MODE 
-¡­
+...
 ```
 
 

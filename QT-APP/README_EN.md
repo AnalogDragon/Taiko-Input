@@ -2,7 +2,7 @@
     QT, WIN64
     The host computer software is used to configure the parameters of the sampling microcontroller.
 
-[Chinese Version](./README.md)
+[中文版](./README.md)
 
 [Home](../)
 

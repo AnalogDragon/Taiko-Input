@@ -1,20 +1,20 @@
 # Taiko Input
 
-This project is an Taiko input hardware which emulates USB HID input device with max 2 of drums & 8 channel digital-input.
+Taiko Input is a hardware device for drum input. It is a USB HID device that can connect two drums and has 8 channels of digital input.  
+The ニジイロ software mentioned in this document is downloaded from the internet.
 
 - [中文版](./README.md)
 
-<br/>
 
-## [HARDWARE](./HW/)
-## [USB-MCU](./USB-MCU/)
-## [Analog sampling MCU](./Sampling-MCU/)
-## [PC-Application](./QT-APP/)
-## [FILE](./TEXT/)
+## [Hardware Engineering](./HW/)
+## [USB Microcontroller](./USB-MCU/)
+## [Sampling Microcontroller](./Sampling-MCU/)
+## [PC Application](./QT-APP/)
+## [Documents](./TEXT/)
+  
 
-<br/><br/>
 
-## Project treeview：
+## Project Structure:
 ```
 |—— HW
     |—— taiko-io
@@ -29,63 +29,125 @@ This project is an Taiko input hardware which emulates USB HID input device with
 |—— TEXT
 ```
 
-<br/><br/>
 
-## HW HARDWARE
+## HW Hardware Engineering
 
-Projects of hardware is in this floder.
+The hardware engineering files are located in this directory.  
 
-taiko-io/ is for two drums. Which used KICAD software to desgin.
-This hardware contains 8 Analog-input & 8 Digital-input. Configure port is on-board. USB power supply OK.
+The `taiko-io/` directory contains the project for dual drums, suitable for the arcade environment. The project is designed using KICAD.  
+This hardware project includes 8 channels of analog input, 8 channels of digital input, on-board configuration interface, and USB power supply.  
 
-taiko-io-mini/ is for only one drum. Which used KICAD software to desgin.
-This hardware contains 4 Analog-input & 4 Digital-input. You should use test point to config. USB power supply OK.
+The `taiko-io-mini/` directory contains the project for a single drum, generally used for a single drum environment. The project is designed using LCEDA.  
+This hardware project includes 4 channels of analog input and 4 buttons, requiring test point configuration and USB power supply.
 
-<br/><br/>
 
-## USB-MCU MCU for USB
+## USB-MCU USB Microcontroller
 
-Programs of USB-MCU is in this folder. Two folders are for different hardwares.
+The software projects for the USB microcontroller are located in this directory. There are two software projects, each tailored to different hardware.  
+The microcontroller used is CH552/CH554, which is an 8-bit USB microcontroller.  
 
-Please notice you should use the software matchs your hardware.
+The `TK_usb_CH552/` directory contains software adapted for the dual drum hardware (arcade), which can be enumerated as a USB-HID keyboard.  
 
-The MCU is CH552 or CH554, an 8-bit 51 MCU.
+The `TK_usb_CH552_mini/` directory contains software adapted for the single drum hardware, capable of being enumerated as different USB devices, such as USB-HID keyboard or n******o switch-compatible gamepad.  
 
-TK_usb_CH552/ is made for two drums. USB Enumeration only for HID keyboard.
+The software is compiled using Keil 4, and relevant software functionality can be enabled/disabled based on macros before compilation.  
 
-TK_usb_CH552_mini/is made for single drum. USB Enumeration for HID keyboard or gamepad of n******o switch.  
 
-This part's ompile only tested with Keil4. You can use macro settings to enable/disable some function.
+## Sampling-MCU Sampling Microcontroller
 
-<br/><br/>
+The software projects for the sampling microcontroller are located in this directory. The software uses macros to differentiate between two hardware models.  
+The microcontroller used is STM32G030.  
 
-## Sampling-MCU Analog sampling MCU
+The software is compiled using Keil 5, and relevant software functionality can be enabled/disabled based on macros before compilation, allowing for switching between hardware versions.  
 
-Programs of Sampling-MCU is in this folder.You can use macro settings to switch hardware version.
-
-The MCU is STM32G030.
-
-This part's ompile only tested with Keil5. You can use macro settings to enable/disable some function and switch hardware version.
-
-<br/><br/>
 
 ## QT-APP PC Application
 
-This folder contains PC Applications. You can config hardware paramater by this app.
+The software project for the PC application is located in this directory. The PC application is used to configure the hardware parameters.  
 
-The application uses QT S UI framework.
+The UI framework used is QT 5.  
 
-<br/><br/>
 
-## TEXT And other files.
+## TEXT Documents
 
-Some intermediate document and output files is in this folder.
+Some intermediate and output documents are located in this directory.  
 
-<br/><br/>
 
-# Hardware flow-chat
-See [HARDWARE](./HW/)  
+# System Diagram
+Refer to [Hardware Engineering](./HW/) for details.  
 
-![HARDWARE](./HW/img/hardware.png "HARDWARE")  
-<center>HARDWARE</center>
+![System Diagram](./HW/img/hardware_en.png "System Diagram")  
+System Diagram  
 
+# Some Interesting Designs
+
+    These designs are mainly based on observations of game behavior to optimize the gaming experience. They may be reasonable or unreasonable.
+
+## Observations of Game Software Behavior
+- Input Frequency Limit: Both the ns platform games and Taiko-Hi have input frequency limits. After testing, it is found that the limits apply independently to each player. For the same player, a single channel has a limit of 30 inputs per second, and all four channels together have a limit of 60 inputs per second. Inputs exceeding this frequency will be discarded.  
+In other words, if only Left Don or Right Don is struck, a maximum of 30 strikes per second is possible, but if Left and Right Don are struck alternately, it can increase to 60 strikes per second.  
+
+- Hardware Limitations of the ns Platform: There is a long filtering period for button inputs, and both the button press and release need to be held for a period of time to take effect.  
+In ns games, this period needs to be longer than 20ms. However, on the home screen, it needs to be even longer, possibly exceeding 20ms and reaching up to 100ms. This may be because the ns supports variable filtering time.  
+
+- Injection of Taiko-Hi Data:
+
+
+## Cross-Assignment of Outputs
+
+Functional implementation is located in the [USB Microcontroller](./USB-MCU/) section.
+
+Due to different software capabilities or operating modes, different software projects support different maximum input frequencies. Cross-assignment of outputs is mainly done to reach the maximum input frequency of each device.  
+In cases where the input frequency is
+
+# Some Split Design Ideas
+
+    The main focus is on optimizing the gaming experience by observing the characteristics of game operation. It may or may not be reasonable.
+
+## Observation of Game Software Operation
+- Input Frequency Limitation: Both the ns platform games and ニジイロ have input frequency limitations. After testing, each player has independent limitations. For the same player, a single channel can have a maximum limit of 30 inputs per second, while all four channels together are limited to 60 inputs per second. Inputs exceeding this frequency will be discarded.  
+This means that if only left or right drum hits are played, a maximum of 30 hits per second can be achieved. However, if left and right drum hits are alternated, it can be increased to 60 hits per second.
+
+- Hardware Limitations of the ns Platform: Key inputs have a long debouncing time, and both pressing and releasing the keys need to be held for a certain period to take effect.  
+Within an ns game, this period needs to be greater than 20ms. However, on the home screen, it needs to be much greater than 20ms, even up to 100ms, which may be due to variable filtering time supported by the ns.
+
+- Data Injection for ニジイロ:
+
+## Cross-Channel Output Allocation
+
+The implementation of this feature is located in the [USB microcontroller](./USB-MCU/).
+
+Due to different device capabilities or software running methods, different software support different maximum input frequencies. The purpose of allocating the output channels is to achieve the input frequency limit of the particular device.  
+The behavior observed is that when the triggering frequency is high, inputs from the same channel will be allocated to another channel. Different devices adopt different approaches:
+- ns: Aggressive debouncing is performed, and when there are high-frequency inputs, they are allocated primarily to the two adjacent keys on the same side.
+- ニジイロ: The game software limits the maximum global input frequency and the maximum input frequency for a single channel. This may be for the convenience of calculating images. Here, the input frequency for a single channel is limited, and inputs of the same type (e.g., "dong") are allocated to idle channels.
+- Other applications on PC (such as Open Taiko): These software programs do not have input frequency limitations, so no allocation is needed.
+
+![Cross-Channel Allocation](./USB-MCU/img/cross.png "Cross-Channel Allocation")
+Diagram showing cross-channel allocation designed for ニジイロ.
+
+## Signal Triggering and Crosstalk Detection
+
+When multiple signals are input simultaneously, the channel with the higher amplitude is selected for triggering.  
+Drum sensors are fixed on several relatively independent wooden boards. In general, direct strikes on the boards produce signals with much higher intensity compared to signals affected by vibration or crosstalk.
+
+The approach here is to introduce a small delay after the first trigger and wait for other channels to trigger. If multiple channels are triggered during this period, the channel with the strongest signal is output.
+
+![Triggering](./Sampling-MCU/img/trigger.png "Triggering")
+Illustration of the triggering process.
+
+    If crosstalk occurs no matter how it is adjusted, the drum's structure needs to be considered. Check if any sensors have come loose or if the height adjustment of the wooden boards is appropriate.
+
+# Appearance
+
+Refer to [Hardware Engineering](./HW/) for details.
+
+## Dual Drum Hardware (Arcade/Two Drum Scene)
+
+![3D Rendering of Dual Drum Hardware](./HW/img/new_io_3d.png  "3D Rendering of Dual Drum Hardware")
+3D rendering of the dual drum hardware.
+
+## Single Drum Hardware (For Personal Use)
+
+![3D Rendering of Single Drum Hardware](./HW/img/taiko_input_x4_3d.png  "3D Rendering of Single Drum Hardware")
+3D rendering of the single drum hardware.

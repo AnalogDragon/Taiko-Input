@@ -4,7 +4,7 @@ Taiko Input Hardware
 
 There are dual drum and single drum hardware options. The dual drum design is intended for arcade or two-drum setups, while the single drum hardware is a simplified version of the dual drum hardware with half of the input frontend removed. There are no significant differences between the two in terms of hardware.
 
-[Chinese Version](./README.md)
+[ä¸­æ–‡ç‰ˆ](./README.md)
 
 [Home](../)
 
@@ -45,13 +45,13 @@ The hardware consists of dual drum hardware and single drum hardware. The dual d
 
 ### Interfaces
 
-- ¢Ù Two single drum input interfaces, with interface definitions inspired by Taiko Force.
-- ¢Ú One dual drum input interface that can be soldered with an IDC-16P ribbon connector or an XAD connector (B16B-XADSS-N) to accommodate different interfaces of dual drums.
-- ¢Û Configuration USB interface for configuring the sampling microcontroller.
-- ¢Ü Taiko USB interface, when plugged into a computer, it enumerates as a USB-HID keyboard device for receiving drum data.
-- ¢Ý Service button input, soldered with an XAD or IDC connector to connect different button panels. The 16P interface is for custom connections, 36P is for the 12-pin IO board interface, and 40P is for updating the frame's IO board interface. It can connect up to 8 buttons with common ground.
-- ¢Þ STM32 burning interface and configuration serial port.
-- ¢ß CH552/CH554 boot selection switch.
+- 1 Two single drum input interfaces, with interface definitions inspired by Taiko Force.
+- 2 One dual drum input interface that can be soldered with an IDC-16P ribbon connector or an XAD connector (B16B-XADSS-N) to accommodate different interfaces of dual drums.
+- 3 Configuration USB interface for configuring the sampling microcontroller.
+- 4 Taiko USB interface, when plugged into a computer, it enumerates as a USB-HID keyboard device for receiving drum data.
+- 5 Service button input, soldered with an XAD or IDC connector to connect different button panels. The 16P interface is for custom connections, 36P is for the 12-pin IO board interface, and 40P is for updating the frame's IO board interface. It can connect up to 8 buttons with common ground.
+- 6 STM32 burning interface and configuration serial port.
+- 7 CH552/CH554 boot selection switch.
 
 
 ## Single Drum Hardware
