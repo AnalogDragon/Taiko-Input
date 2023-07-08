@@ -134,11 +134,6 @@ USB_SETUP_REQ   SetupReqBuf;                                                    
 volatile UINT8  KeyCountTime_A[4] = {0};
 volatile UINT8  KeyCountTime_B[4] = {0};
 
-#define MODE_NS_GP 		0
-#define MODE_KEYBOARD 	1
-#define MODE_KB_LMT  	2
-#define MODE_STARTUP  	MODE_KEYBOARD
-
 UINT8 start_up_mode = MODE_STARTUP;
 
 volatile UINT16 KEY_OUT = 0;
@@ -146,11 +141,11 @@ volatile UINT16 KEY_OUT = 0;
 #pragma  NOAREGS
 /*设备描述符*/
 UINT8C DevDesc_Gamepad[18] = {0x12,0x01,0x00,0x02,0x00,0x00,0x00,THIS_ENDP0_SIZE,
-                      VID,VID>>8,PID,PID>>8,0x00,0x02,0x01,0x02,
+                      VID,VID>>8,PID,PID>>8,0x01,0x02,0x01,0x02,
                       0x03,0x01};
 
 UINT8C DevDesc_Keyboard[18] = {0x12,0x01,0x00,0x02,0x00,0x00,0x00,THIS_ENDP0_SIZE,
-                      VID1,VID1>>8,PID1,PID1>>8,0x00,0x02,0x01,0x02,
+                      VID1,VID1>>8,PID1,PID1>>8,0x01,0x02,0x01,0x02,
                       0x03,0x01};
 
 UINT8C HIDRepDesc_Gamepad[80] =
@@ -1423,10 +1418,13 @@ void main(void)
 
     InitIO();
     CfgFsys();                                                           //CH559时钟选择配置
-    mDelaymS(5);                                                          //修改主频等待内部晶振稳定,必加	
-  
+    mDelaymS(5);                                                          //修改主频等待内部晶振稳定,必加
+	
+	
+
+	
 	//start up delay1 wait 1s
-	start_up_mode = MODE_STARTUP;
+	start_up_mode = load_mode();
     while (1){
 		if(!KEY1)start_up_mode = MODE_NS_GP;
 		if(!KEY2)start_up_mode = MODE_KEYBOARD;
@@ -1443,6 +1441,12 @@ void main(void)
 		if((WAIT_COUNT%3)==0)
 			LED_USB = ~LED_USB;
 	}
+	Flash_Op_Check_Byte1 = DEF_FLASH_OP_CHECK1;
+	Flash_Op_Check_Byte2 = DEF_FLASH_OP_CHECK2;
+	save_mode(start_up_mode);
+//	test();
+	Flash_Op_Check_Byte1 = 0x00;
+	Flash_Op_Check_Byte2 = 0x00;
 	
 	if(start_up_mode == MODE_NS_GP){
 		UINT8 COUNT_NUM_D = 2;

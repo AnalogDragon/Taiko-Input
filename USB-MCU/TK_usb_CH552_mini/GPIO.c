@@ -134,7 +134,7 @@ UINT16 ReadIO(void){
 
 #define LONG_PRESS_TIME  2000
 
-#define TRIGGER_TIME  (150 * 13 / 5)
+#define TRIGGER_TIME  (100)	//ms
 
 UINT8 ReadIOSlow(void){
 	
@@ -142,7 +142,7 @@ UINT8 ReadIOSlow(void){
 	static UINT16 IO_COUNT_FILTER_DN[4] = {0};
 	static UINT8 IODATA = 0;
 	static UINT8 IODATA_bak = 0;
-  static KeyOut = 0;
+	static KeyOut = 0;
 	static UINT16 IODATA_count = 0;
 	UINT8 i;
 
@@ -243,6 +243,199 @@ UINT8 ReadIOSlow(void){
 }
 
 
+
+/*------------------------------data flash-----------------------------------*/
+
+#define DEF_FLASH_OP_CHECK1     0xAA
+#define DEF_FLASH_OP_CHECK2     0x55   
+
+UINT8 Flash_Op_Check_Byte1 = 0x00;
+UINT8 Flash_Op_Check_Byte2 = 0x00;
+
+
+UINT8 Flash_Op_Unlock( UINT8 flash_type )
+{
+    bit ea_sts;
+    
+    /* Check the Flash operation flags to prevent Flash misoperation. */
+    if( ( Flash_Op_Check_Byte1 != DEF_FLASH_OP_CHECK1 ) ||
+        ( Flash_Op_Check_Byte2 != DEF_FLASH_OP_CHECK2 ) )
+    {
+        return 0xFF;   /* Flash Operation Flags Error */
+    }
+    
+    /* Disable all INTs to prevent writing GLOBAL_CFG from failing in safe mode. */
+    ea_sts = EA;                                
+    EA = 0;
+    
+    /* Enable Flash writing operations. */
+    SAFE_MOD = 0x55;
+	SAFE_MOD = 0xAA;
+	GLOBAL_CFG |= flash_type;
+    SAFE_MOD = 0x00;
+
+    /* Restore all INTs. */
+    EA = ea_sts;
+    
+    return 0x00;
+}
+
+
+void Flash_Op_Lock( UINT8 flash_type )
+{
+    bit ea_sts;
+    
+    /* Disable all INTs to prevent writing GLOBAL_CFG from failing in safe mode. */
+    ea_sts = EA;                                
+    EA = 0;
+    
+    /* Disable Flash writing operations. */
+    SAFE_MOD = 0x55;
+	SAFE_MOD = 0xAA;
+	GLOBAL_CFG &= ~flash_type;
+    SAFE_MOD = 0x00;
+    
+    /* Restore all INTs. */
+    EA = ea_sts;
+}
+
+
+bit clear_data_flash(void){
+    UINT8 i;
+    
+    if( Flash_Op_Unlock( bDATA_WE ) )
+        return 1;
+    
+    ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
+    for(i=0;i<128;i++)
+	{
+        ROM_ADDR_L = i*2;
+        ROM_DATA_L = 0xFF;			
+        if ( ROM_STATUS & bROM_ADDR_OK ) { 
+           ROM_CTRL = ROM_CMD_WRITE; 
+        }
+        if((ROM_STATUS ^ bROM_ADDR_OK) > 0) return 1;
+	}
+    Flash_Op_Lock( bDATA_WE );
+    
+    return 0;
+}
+
+UINT8 load_mode(void){
+	//從前往後找
+	UINT8 i;
+	UINT8 dat;
+	bit data_err = 0;
+	UINT8 last_addr = 0xFF;
+	UINT8 last_data = 0xFF;
+
+	//檢查是否有非法數據（不等於255且大於最大mode）
+	ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
+	for(i=0;i<128;i++){
+		ROM_ADDR_L = i*2;
+		ROM_CTRL = ROM_CMD_READ;
+		dat = ROM_DATA_L;
+		if(dat != 0xFF && dat > MODE_MAX){
+			//裏面有奇怪的數據
+			data_err = 1;
+		}
+		if(dat <= MODE_MAX){
+			last_addr = i;
+			last_data = dat;
+		}
+	}
+	
+	if(last_data <= MODE_MAX){
+		return last_data;
+	}
+	
+	return MODE_STARTUP;
+}
+
+bit save_mode(UINT8 mode){	
+	//從前往後存
+	UINT8 i;
+	UINT8 dat;
+	bit data_err = 0;
+	bit no_data = 1;
+	UINT8 last_addr = 0;
+	UINT8 last_data = 0xFF;
+	
+	if(mode > MODE_MAX)
+		return 1;
+	
+	//檢查是否有非法數據（不等於255且大於最大mode）
+	ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
+	for(i=0;i<128;i++){
+		ROM_ADDR_L = i*2;
+		ROM_CTRL = ROM_CMD_READ;
+		dat = ROM_DATA_L;
+		if(dat != 0xFF && dat > MODE_MAX){
+			//裏面有奇怪的數據
+			data_err = 1;
+		}
+		if(dat <= MODE_MAX){
+			last_addr = i;
+			last_data = dat;
+			no_data = 0;
+		}
+	}
+	
+	if(data_err || last_addr >= 127){
+		last_addr = 0;
+		if(clear_data_flash()){
+			mDelaymS(5);
+			if(clear_data_flash()){
+				return 1;
+			}
+		}
+	}
+	else{
+		if(!no_data)
+		last_addr++;
+	}
+	
+	if(mode == last_data){
+		return 0;
+	}
+	
+	mDelaymS(5);
+	
+    if( Flash_Op_Unlock( bDATA_WE ) )
+        return 1;
+    
+    ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
+
+	ROM_ADDR_L = last_addr*2;
+	ROM_DATA_L = mode;
+	if ( ROM_STATUS & bROM_ADDR_OK ) { 
+	   ROM_CTRL = ROM_CMD_WRITE; 
+	}
+	if((ROM_STATUS ^ bROM_ADDR_OK) > 0) return 1;
+	
+    Flash_Op_Lock( bDATA_WE );
+    
+    return 0;
+	
+}
+
+
+
+void test(void){
+	UINT16 i;
+	
+	for(i=0;i<6000;i++){
+		save_mode(i%3);
+		if((i%3) != load_mode()){
+			while(1){
+				WDOG_COUNT = 0;
+				LED_USB = 0;
+			}
+		}
+		WDOG_COUNT = 0;
+	}
+	
+}
 
 
 
