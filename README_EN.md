@@ -81,8 +81,7 @@ System Diagram
 
 # Some Interesting Designs
 
-    The main focus is on optimizing the gaming experience 
-    by observing the characteristics of game operation. 
+    The main focus is on optimizing the gaming experience by observing the characteristics of game operation. 
     It may or may not be reasonable.
 
 ## Observation of Game Software Operation
