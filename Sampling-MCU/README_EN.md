@@ -7,19 +7,19 @@
 [Home](../)  
 
 
-## Dual Drum Version and Single Drum Version
+## Dual Taiko Version and Single Taiko Version
 
-Differentiate the software between dual drum and single drum hardware using macros in /main.h/.  
-It is important to note that the software compiled for single drum hardware cannot be used on dual drum hardware due to differences in initialization.  
+Differentiate the software between dual taiko and single taiko hardware using macros in /main.h/.  
+It is important to note that the software compiled for single taiko hardware cannot be used on dual taiko hardware due to differences in initialization.  
 
-Single Drum Version:
+Single Taiko Version:
 ```
 ...
 #define IS_4CH_MODE 
 ...
 ```
 
-Dual Drum Version (comment out this line of code):
+Dual Taiko Version (comment out this line of code):
 ```
 ...
 //#define IS_4CH_MODE 
@@ -30,7 +30,7 @@ Dual Drum Version (comment out this line of code):
 ## Digital Signal Processing
 
 Digital signal processing mainly involves trigger handling, debouncing, and determining if there is signal crosstalk.  
-Since the drum contains a physical structure, vibrations can cause signal misfires. Therefore, it is necessary to determine and output the signals received at the same time.  
+Since the taiko contains a physical structure, vibrations can cause signal misfires. Therefore, it is necessary to determine and output the signals received at the same time.  
 
 ### Processing Flowchart
 
@@ -39,14 +39,14 @@ Data flow diagram
 
 After the signal is sampled, it is recorded as a waveform array, and a trigger function is used to determine if there is a signal with the expected strength.  
 The delayed output ensures that when a signal arrives, it does not miss the trigger of other sensors. If other channels are triggered during the delay, the triggered values will also be recorded.  
-The arbitration function determines the maximum strength among the triggered channels during the delay and is used to reset the states of other functions.  
+The arbitration function determines the maximum strength among the triggered channels during the delay, and then reset the states of other functions.  
 The output signal is sent to the USB microcontroller by the output device.  
 
 
 ### Signal Triggering and Crosstalk Detection
 
 When multiple signals are input simultaneously, the channel with the higher amplitude will be triggered.  
-The drum sensors are fixed on several relatively independent boards. Typically, the signal obtained by directly striking the board has a much higher strength than the signals caused by vibration interference or crosstalk.  
+The taiko sensors are fixed on several relatively independent boards. Typically, the signal obtained by directly striking the board has a much higher strength than the signals caused by vibration interference or crosstalk.  
 
 The approach here is to wait for a small delay after the initial trigger to allow other channels to trigger. If multiple channels are triggered during this period, then the channel with the strongest signal among them is output.  
 

@@ -14,14 +14,14 @@ Screenshot
 
 ### Software Interface
 
-- A-Drum sensor channel sequence configuration
+- A-Taiko sensor channel sequence configuration
 - B-Input configuration-Trigger threshold (triggering is done in hardware, no obvious effect in software configuration)
 - C-Input configuration-Multiplication factor (configure this when a certain sensor is exceptionally sensitive or insensitive, C for reset)
 - D-Output time configuration, H for hold time when pressing, L for hold time when releasing, no response to other inputs during hold time
-- E-Shielding configuration (used to calculate crosstalk caused by the physical structure of the drum)
+- E-Shielding configuration (used to calculate crosstalk caused by the physical structure of the taiko)
 - F-Shielding configuration-Single response (selecting this will trigger only one sensor each time)
 - G-Shielding configuration-Calculate rounds (set to 0 to disable calculation, directly trigger according to the fastest speed)
-- H-Some default parameters (for big drum and arcade drum)
+- H-Some default parameters (for Taiko Force and arcade taiko)
 - I-Serial port selection
 - J-Select the parameter group on the upload board
 - K-Upload parameter button
@@ -34,12 +34,12 @@ Screenshot
 - 1 Select the serial port, click upload, and the status will be displayed as `Success` (used to determine if the connection is successful)
 - 2 Reset the preset parameters according to your needs or upload old parameters
     - For modifications based on the old parameters, select `Load Saved`, and then press the upload parameter button
-    - For modifications based on the default configuration, click the desired default configuration button (the two default configurations only differ in drum mapping)
-- After making modifications, click the download parameter button and confirm if the parameters are reasonable on the drum
+    - For modifications based on the default configuration, click the desired default configuration button (the two default configurations only differ in taiko mapping)
+- After making modifications, click the download parameter button and confirm if the parameters are reasonable on the taiko
 - Click the save parameter button
 
 
 ## Other Instructions
-- When using single drum hardware, the parameters for the second drum are meaningless
-- Default configurations may have issues; you can make fine adjustments based on the default parameters to suit your drum
-- The sensor wire sequence of the drum can be remapped through this host computer.
+- When using single taiko hardware, the parameters for the second taiko are meaningless
+- Default configurations may have issues; you can make fine adjustments based on the default parameters to suit your taiko
+- The sensor wire sequence of the taiko can be remapped through this APP.
