@@ -35,8 +35,8 @@ Screenshot
 - 2 Reset the preset parameters according to your needs or upload old parameters
     - For modifications based on the old parameters, select `Load Saved`, and then press the upload parameter button
     - For modifications based on the default configuration, click the desired default configuration button (the two default configurations only differ in taiko mapping)
-- After making modifications, click the download parameter button and confirm if the parameters are reasonable on the taiko
-- Click the save parameter button
+- 3 After making modifications, click the download parameter button and confirm if the parameters are reasonable on the taiko
+- 4 Click the save parameter button
 
 
 ## Other Instructions

@@ -49,7 +49,7 @@ The hardware consists of dual taiko hardware and single taiko hardware. The dual
 - 2 One dual taiko input interface that can be soldered with an IDC-16P ribbon connector or an XAD connector (B16B-XADSS-N) to accommodate different interfaces of dual taiko.
 - 3 Configuration USB interface for configuring the sampling microcontroller.
 - 4 Taiko USB interface, when plugged into a computer, it enumerates as a USB-HID keyboard device for receiving taiko data.
-- 5 Service button input, soldered with an XAD or IDC connector to connect different button panels. The 16P interface is for custom connections, 36P is for the old IO board interface, and 40P is for newer the frame's IO board interface. It can connect up to 8 buttons with common ground.
+- 5 Service button input, soldered with an XAD or IDC connector to connect different button panels. The 16P interface is for custom connections, 36P is for the old(12th) IO board interface(B36B-XADSS-N), and 40P is for newer the frame's IO board interface(B40B-XADSS-N). It can connect up to 8 buttons with common ground.
 - 6 STM32 burning interface and configuration serial port.
 - 7 CH552/CH554 boot selection switch.
 
